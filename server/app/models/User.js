@@ -21,6 +21,10 @@ const User = new Schema(
             required: true,
             trim: true,
         },
+        email: {
+            type: String,
+            trim: true,
+        },
     },
     { timestamps: true, collection: 'users' }
 );

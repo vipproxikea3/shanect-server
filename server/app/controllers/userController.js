@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const CodeLog = require('../models/CodeLog');
 const bcrypt = require('bcrypt');
 
 const userController = {
@@ -46,6 +47,35 @@ const userController = {
                 user,
                 token,
             });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
+    updateEmail: async (req, res) => {
+        try {
+            const { username, email, code } = req.body;
+            let user = await User.findOne({ username });
+            if (!user) {
+                return res.status(400).json({ msg: 'User not found' });
+            }
+
+            let codeLog = await CodeLog.findOne({ email: email }).sort({
+                createdAt: -1,
+            });
+
+            if (!codeLog) {
+                return res.status(400).json({ msg: 'Verify Code not found' });
+            }
+
+            if (code !== codeLog.code) {
+                return res.status(400).json({ msg: 'Verify Code incorrect' });
+            }
+
+            user.email = email;
+
+            await user.save();
+
+            return res.json({ user });
         } catch (err) {
             return res.status(500).json({ msg: err.message });
         }

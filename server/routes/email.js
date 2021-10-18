@@ -3,6 +3,7 @@ const multer = require('multer');
 const emailController = require('../app/controllers/emailController');
 
 router.use(multer().none());
-router.post('/send', emailController.send);
+router.post('/send-verify-code', emailController.sendVerifyCode);
+router.post('/send-new-password', emailController.sendNewPassword);
 
 module.exports = router;
