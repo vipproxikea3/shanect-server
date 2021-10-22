@@ -25,6 +25,24 @@ const User = new Schema(
             type: String,
             trim: true,
         },
+        gender: {
+            // 0. Another - 1. Male - 2. Female
+            type: Number,
+            default: 0,
+        },
+        yearOfBirth: {
+            type: Number,
+        },
+        avatar: {
+            type: String,
+            default:
+                'https://res.cloudinary.com/shanectteam/image/upload/v1634874318/user_zjvzyj.png',
+        },
+        role: {
+            // 0. User - 1. Admin
+            type: Number,
+            default: 0,
+        },
     },
     { timestamps: true, collection: 'users' }
 );
