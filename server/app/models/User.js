@@ -30,8 +30,16 @@ const User = new Schema(
             type: Number,
             default: 0,
         },
-        yearOfBirth: {
-            type: Number,
+        dateOfBirth: {
+            date: {
+                type: Number,
+            },
+            month: {
+                type: Number,
+            },
+            year: {
+                type: Number,
+            },
         },
         avatar: {
             type: String,
@@ -42,6 +50,10 @@ const User = new Schema(
             // 0. User - 1. Admin
             type: Number,
             default: 0,
+        },
+        verified: {
+            type: Boolean,
+            default: false,
         },
     },
     { timestamps: true, collection: 'users' }

@@ -12,9 +12,10 @@ router.put(
 );
 router.use(multer().none());
 router.get('/me', auth, userController.getMe);
+router.get('/verify', userController.verifyUser);
 router.post('/register', userController.register);
 router.post('/login', userController.login);
-router.put('/email', userController.updateEmail);
+router.put('/email', auth, userController.updateEmail);
 router.put('/password', auth, userController.updatePassword);
 router.post('/reset-password', userController.resetPassword);
 router.put('/', auth, userController.update);
