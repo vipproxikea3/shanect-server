@@ -13,7 +13,6 @@ const subCategoryController = {
             await subCategory.save();
             let subArr = category.subCategory;
             subArr.push(subCategory._id);
-            console.log(subArr);
 
             category.subCategory = subArr;
             await category.save();

@@ -3,12 +3,14 @@ const Category = require('../models/Category');
 const categoryController = {
     create: async (req, res) => {
         try {
-            const { name } = req.body;
+            const { name, type, icon } = req.body;
             let category = await Category.findOne({ name: name });
             if (category)
                 return res.status(500).json({ msg: 'This category exist' });
             category = new Category();
             category.name = name;
+            category.type = type;
+            category.icon = icon;
             await category.save();
             return res.json(category);
         } catch (err) {

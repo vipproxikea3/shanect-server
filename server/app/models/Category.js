@@ -9,6 +9,12 @@ const Category = new Schema(
             required: true,
             trim: true,
         },
+        type: {
+            type: Number,
+        },
+        icon: {
+            type: String,
+        },
         subCategory: [{ type: Schema.Types.ObjectId, ref: 'SubCategory' }],
     },
     { timestamps: true, collection: 'categories' }
