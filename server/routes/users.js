@@ -14,7 +14,7 @@ router.put(
     '/cover',
     auth,
     fileUploader.single('cover'),
-    userController.updateAvatar
+    userController.updateCover
 );
 router.use(multer().none());
 router.get('/me', auth, userController.getMe);
