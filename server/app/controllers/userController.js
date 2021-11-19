@@ -554,6 +554,23 @@ a[x-apple-data-detectors='true'] {
             return res.status(500).json({ msg: err.message });
         }
     },
+    updateCover: async (req, res) => {
+        try {
+            let user = req.user;
+
+            if (!user) {
+                return res.status(400).json({ msg: 'User not found' });
+            }
+
+            if (req.file) user.cover = req.file.path;
+
+            await user.save();
+
+            return res.json({ user });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
     update: async (req, res) => {
         try {
             const { name, dateOfBirth, monthOfBirth, yearOfBirth, gender } =

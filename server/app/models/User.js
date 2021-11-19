@@ -46,6 +46,11 @@ const User = new Schema(
             default:
                 'https://res.cloudinary.com/shanectteam/image/upload/v1634874318/user_zjvzyj.png',
         },
+        cover: {
+            type: String,
+            default:
+                'https://res.cloudinary.com/shanectteam/image/upload/v1637330712/cover_nz218q.jpg',
+        },
         role: {
             // 0. User - 1. Admin
             type: Number,

@@ -10,6 +10,12 @@ router.put(
     fileUploader.single('avatar'),
     userController.updateAvatar
 );
+router.put(
+    '/cover',
+    auth,
+    fileUploader.single('cover'),
+    userController.updateAvatar
+);
 router.use(multer().none());
 router.get('/me', auth, userController.getMe);
 router.get('/verify', userController.verifyUser);
