@@ -76,6 +76,56 @@ const postController = {
             return res.status(500).json({ msg: err.message });
         }
     },
+    getMyPost: async (req, res) => {
+        try {
+            const user = req.user;
+            if (!user) return res.status(400).json({ msg: 'User not found' });
+            const posts = await Post.find({ user: user._id })
+                .populate({
+                    path: 'categories',
+                    model: 'Category',
+                    select: 'name',
+                })
+                .populate({
+                    path: 'subCategories',
+                    model: 'SubCategory',
+                    select: 'name',
+                })
+                .populate({
+                    path: 'areas',
+                    populate: [
+                        {
+                            path: 'province',
+                            model: 'Province',
+                            select: 'name',
+                        },
+                    ],
+                })
+                .populate({
+                    path: 'areas',
+                    populate: [
+                        {
+                            path: 'district',
+                            model: 'District',
+                            select: 'name',
+                        },
+                    ],
+                })
+                .populate({
+                    path: 'areas',
+                    populate: [
+                        {
+                            path: 'ward',
+                            model: 'Ward',
+                            select: 'name',
+                        },
+                    ],
+                });
+            return res.json(posts);
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
     getById: async (req, res) => {
         try {
             const id = req.params.id;

@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const multer = require('multer');
 const userController = require('../app/controllers/userController');
+const postController = require('../app/controllers/postController');
 const auth = require('../app/middleware/auth');
 const fileUploader = require('../app/middleware/uploadMiddleware');
 
@@ -17,6 +18,7 @@ router.put(
     userController.updateCover
 );
 router.use(multer().none());
+router.get('/me/posts', auth, postController.getMyPost);
 router.get('/me', auth, userController.getMe);
 router.get('/verify', userController.verifyUser);
 router.post('/register', userController.register);
