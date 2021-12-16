@@ -4,6 +4,8 @@ const emailRouter = require('./email');
 const subCategoriesRouter = require('./subCategories');
 const postsRouter = require('./posts');
 const areasRouter = require('./areas');
+const messagesRouter = require('./messages');
+const contactsRouter = require('./contacts');
 
 function router(app) {
     app.use('/api/users', usersRouter);
@@ -12,6 +14,8 @@ function router(app) {
     app.use('/api/sub-categories', subCategoriesRouter);
     app.use('/api/posts', postsRouter);
     app.use('/api/areas', areasRouter);
+    app.use('/api/messages', messagesRouter);
+    app.use('/api/contacts', contactsRouter);
 
     app.use('/', (req, res) => {
         res.json({ msg: 'API of project Shanect' });
