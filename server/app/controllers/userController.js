@@ -4,6 +4,14 @@ const bcrypt = require('bcrypt');
 const gpc = require('generate-pincode');
 const nodemailer = require('nodemailer');
 
+var cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+    cloud_name: 'shanectteam',
+    api_key: '662668157463451',
+    api_secret: 'Xy0OfONXFogj_KoCXuHOKKfaetw',
+});
+
 const userController = {
     getMe: async (req, res) => {
         try {
@@ -545,7 +553,12 @@ a[x-apple-data-detectors='true'] {
                 return res.status(400).json({ msg: 'User not found' });
             }
 
-            if (req.file) user.avatar = req.file.path;
+            let lastAvatar = '';
+            if (req.file) {
+                lastAvatar = user.avatar;
+                user.avatar = req.file.path;
+                await cloudinary.uploader.destroy('ff8pqyxufpidp4a9kkp5');
+            }
 
             await user.save();
 

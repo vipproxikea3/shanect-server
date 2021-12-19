@@ -1,6 +1,15 @@
 const Message = require('../models/Message');
 const Contact = require('../models/Contact');
 const User = require('../models/User');
+const Pusher = require('pusher');
+
+const pusher = new Pusher({
+    appId: '1318099',
+    key: '19f5ca9c7637832b95dd',
+    secret: '8b2a92e1d0ce2855cc8d',
+    cluster: 'ap1',
+    useTLS: true,
+});
 
 const messageController = {
     send: async (req, res) => {
@@ -51,6 +60,10 @@ const messageController = {
                 contact.seen = [user._id];
                 await contact.save();
             }
+
+            pusher.trigger('my-channel', 'my-event', {
+                message: message,
+            });
 
             return res.json({ message });
         } catch (err) {
