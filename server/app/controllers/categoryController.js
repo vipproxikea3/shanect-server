@@ -19,7 +19,15 @@ const categoryController = {
     },
     getAll: async (req, res) => {
         try {
-            const categories = await Category.find({}).populate({
+            const { type } = req.query;
+            if (!type) {
+                const categories = await Category.find({}).populate({
+                    path: 'subCategory',
+                    select: 'name',
+                });
+                return res.json(categories);
+            }
+            const categories = await Category.find({ type: type }).populate({
                 path: 'subCategory',
                 select: 'name',
             });
@@ -31,7 +39,10 @@ const categoryController = {
     getById: async (req, res) => {
         try {
             const id = req.params.id;
-            const category = await Category.findOne({ _id: id });
+            const category = await Category.findOne({ _id: id }).populate({
+                path: 'subCategory',
+                select: 'name',
+            });
             if (!category)
                 return res.status(500).json({ msg: 'This category not exist' });
             return res.json(category);

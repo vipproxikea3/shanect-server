@@ -18,6 +18,7 @@ router.put(
     userController.updateCover
 );
 router.use(multer().none());
+router.put('/advise', auth, userController.updateAdvise);
 router.get('/me/posts', auth, postController.getMyPost);
 router.get('/me', auth, userController.getMe);
 router.get('/verify', userController.verifyUser);

@@ -60,6 +60,12 @@ const User = new Schema(
             type: Boolean,
             default: false,
         },
+        advise: {
+            categories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
+            description: { type: String },
+            images: [{ type: String }],
+            ready: { type: Boolean, default: false },
+        },
     },
     { timestamps: true, collection: 'users' }
 );

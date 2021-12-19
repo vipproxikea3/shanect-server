@@ -11,6 +11,7 @@ const Post = new Schema(
         status: { type: Boolean, default: true },
         categories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
         subCategories: [{ type: Schema.Types.ObjectId, ref: 'SubCategory' }],
+        everyWhere: { type: Boolean, default: false },
         areas: [
             {
                 province: { type: Schema.Types.ObjectId, ref: 'Province' },

@@ -553,11 +553,8 @@ a[x-apple-data-detectors='true'] {
                 return res.status(400).json({ msg: 'User not found' });
             }
 
-            let lastAvatar = '';
             if (req.file) {
-                lastAvatar = user.avatar;
                 user.avatar = req.file.path;
-                await cloudinary.uploader.destroy('ff8pqyxufpidp4a9kkp5');
             }
 
             await user.save();
@@ -602,6 +599,27 @@ a[x-apple-data-detectors='true'] {
                 month: monthOfBirth,
                 year: yearOfBirth,
             };
+
+            await user.save();
+
+            return res.json({ user });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
+    updateAdvise: async (req, res) => {
+        try {
+            const { categories, description, ready } = req.body;
+
+            let user = req.user;
+
+            if (!user) {
+                return res.status(400).json({ msg: 'User not found' });
+            }
+
+            user.advise.categories = categories;
+            user.advise.description = description;
+            user.advise.ready = ready;
 
             await user.save();
 
