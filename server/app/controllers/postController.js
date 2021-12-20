@@ -45,6 +45,7 @@ const postController = {
     getAll: async (req, res) => {
         try {
             let posts = await Post.find({})
+                .sort({ createdAt: 'desc' })
                 .populate({
                     path: 'categories',
                     model: 'Category',
@@ -169,6 +170,7 @@ const postController = {
             const user = req.user;
             if (!user) return res.status(400).json({ msg: 'User not found' });
             const posts = await Post.find({ user: user._id })
+                .sort({ createdAt: 'desc' })
                 .populate({
                     path: 'categories',
                     model: 'Category',

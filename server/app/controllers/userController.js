@@ -628,6 +628,28 @@ a[x-apple-data-detectors='true'] {
             return res.status(500).json({ msg: err.message });
         }
     },
+    updateAdviseImages: async (req, res) => {
+        try {
+            let user = req.user;
+
+            if (!user) {
+                return res.status(400).json({ msg: 'User not found' });
+            }
+
+            if (req.files) {
+                const images = req.files.map((item) => {
+                    return item.path;
+                });
+                user.advise.images = images;
+            }
+
+            await user.save();
+
+            return res.json({ user });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
     resetPassword: async (req, res) => {
         try {
             const { username, code } = req.body;

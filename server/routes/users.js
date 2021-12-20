@@ -17,6 +17,12 @@ router.put(
     fileUploader.single('cover'),
     userController.updateCover
 );
+router.put(
+    '/advise-images',
+    auth,
+    fileUploader.array('images', 10),
+    userController.updateAdviseImages
+);
 router.use(multer().none());
 router.put('/advise', auth, userController.updateAdvise);
 router.get('/me/posts', auth, postController.getMyPost);
