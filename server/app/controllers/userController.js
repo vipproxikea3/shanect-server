@@ -15,11 +15,11 @@ cloudinary.config({
 const userController = {
     getMe: async (req, res) => {
         try {
-            const user = req.user;
+            const tmp = req.user;
 
-            if (!user) return res.status(400).json({ msg: 'User not found' });
+            if (!tmp) return res.status(400).json({ msg: 'User not found' });
 
-            let newUser = await User.findOne({ _id: user._id }).populate({
+            let user = await User.findOne({ _id: tmp._id }).populate({
                 path: 'advise',
                 populate: [
                     {
@@ -30,7 +30,7 @@ const userController = {
                 ],
             });
 
-            return res.json({ newUser });
+            return res.json({ user });
         } catch (err) {
             return res.status(500).json({ msg: err.message });
         }
