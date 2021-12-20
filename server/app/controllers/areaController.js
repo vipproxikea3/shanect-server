@@ -98,6 +98,27 @@ const areaController = {
             return res.status(500).json({ msg: err.message });
         }
     },
+    getAddress: async (req, res) => {
+        try {
+            const { province, district, ward } = req.body;
+            let address = {};
+            if (province) {
+                let result = await Province.findOne({ _id: province });
+                address.province = result.name;
+            }
+            if (district) {
+                let result = await District.findOne({ _id: district });
+                address.district = result.name;
+            }
+            if (ward) {
+                let result = await Ward.findOne({ _id: ward });
+                address.ward = result.name;
+            }
+            return res.json({ address });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
 };
 
 module.exports = areaController;

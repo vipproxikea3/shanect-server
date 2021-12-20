@@ -8,5 +8,6 @@ router.get('/provinces', areaController.getProvinces);
 router.get('/districts/:id', areaController.getDistrictById);
 router.get('/districts', areaController.getDistricts);
 router.get('/wards', areaController.getWards);
+router.get('/address', areaController.getAddress);
 
 module.exports = router;
