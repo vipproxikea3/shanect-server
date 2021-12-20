@@ -19,7 +19,18 @@ const userController = {
 
             if (!user) return res.status(400).json({ msg: 'User not found' });
 
-            return res.json({ user });
+            let newUser = await User.findOne({ _id: user._id }).populate({
+                path: 'advise',
+                populate: [
+                    {
+                        path: 'categories',
+                        model: 'Category',
+                        select: 'name',
+                    },
+                ],
+            });
+
+            return res.json({ newUser });
         } catch (err) {
             return res.status(500).json({ msg: err.message });
         }
