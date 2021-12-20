@@ -17,15 +17,10 @@ const postController = {
                 everyWhere,
             } = req.body;
 
-            const images = req.files.map((item) => {
-                return item.path;
-            });
-
             post = new Post();
             post.user = user._id;
             post.title = title;
             post.content = content;
-            post.images = images;
             post.categories = categories;
             post.subCategories = subCategories;
             if (everyWhere == true) {
@@ -33,6 +28,14 @@ const postController = {
             } else {
                 post.areas = areas;
             }
+
+            if (req.files) {
+                const images = req.files.map((item) => {
+                    return item.path;
+                });
+                post.images = images;
+            }
+
             await post.save();
             return res.json(post);
         } catch (err) {
