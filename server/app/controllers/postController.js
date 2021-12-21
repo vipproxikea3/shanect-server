@@ -18,7 +18,10 @@ const postController = {
             post.categories = categories;
             post.subCategories = subCategories;
             post.areas = areas;
-            if (areas.length == 0 || areas == undefined) post.everyWhere = true;
+            if (areas == undefined) {
+                post.everyWhere = true;
+                post.areas = [];
+            }
 
             if (req.files) {
                 const images = req.files.map((item) => {
