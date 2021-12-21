@@ -632,6 +632,17 @@ a[x-apple-data-detectors='true'] {
 
             await user.save();
 
+            user = await User.findOne({ _id: user._id }).populate({
+                path: 'advise',
+                populate: [
+                    {
+                        path: 'categories',
+                        model: 'Category',
+                        select: 'name',
+                    },
+                ],
+            });
+
             return res.json({ user });
         } catch (err) {
             return res.status(500).json({ msg: err.message });
@@ -651,6 +662,17 @@ a[x-apple-data-detectors='true'] {
 
             await user.save();
 
+            user = await User.findOne({ _id: user._id }).populate({
+                path: 'advise',
+                populate: [
+                    {
+                        path: 'categories',
+                        model: 'Category',
+                        select: 'name',
+                    },
+                ],
+            });
+
             return res.json({ user });
         } catch (err) {
             return res.status(500).json({ msg: err.message });
@@ -669,6 +691,17 @@ a[x-apple-data-detectors='true'] {
             user.advise.ready = ready;
 
             await user.save();
+
+            user = await User.findOne({ _id: user._id }).populate({
+                path: 'advise',
+                populate: [
+                    {
+                        path: 'categories',
+                        model: 'Category',
+                        select: 'name',
+                    },
+                ],
+            });
 
             return res.json({ user });
         } catch (err) {
@@ -691,6 +724,17 @@ a[x-apple-data-detectors='true'] {
             }
 
             await user.save();
+
+            user = await User.findOne({ _id: user._id }).populate({
+                path: 'advise',
+                populate: [
+                    {
+                        path: 'categories',
+                        model: 'Category',
+                        select: 'name',
+                    },
+                ],
+            });
 
             return res.json({ user });
         } catch (err) {
