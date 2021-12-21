@@ -35,6 +35,7 @@ router.post('/login', userController.login);
 router.put('/email', auth, userController.updateEmail);
 router.put('/password', auth, userController.updatePassword);
 router.post('/reset-password', userController.resetPassword);
+router.get('/:id', userController.getUserById);
 router.put('/', auth, userController.update);
 
 module.exports = router;

@@ -35,6 +35,25 @@ const userController = {
             return res.status(500).json({ msg: err.message });
         }
     },
+    getUserById: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const user = await User.findOne({ _id: id }).populate({
+                path: 'advise',
+                populate: [
+                    {
+                        path: 'categories',
+                        model: 'Category',
+                        select: 'name',
+                    },
+                ],
+            });
+
+            return res.json({ user });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
     register: async (req, res) => {
         try {
             const {
