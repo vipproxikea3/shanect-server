@@ -36,6 +36,7 @@ router.put('/email', auth, userController.updateEmail);
 router.put('/password', auth, userController.updatePassword);
 router.post('/reset-password', userController.resetPassword);
 router.get('/:id', userController.getUserById);
+router.get('/:id/posts', userController.getPostsByUser);
 router.put('/', auth, userController.update);
 
 module.exports = router;

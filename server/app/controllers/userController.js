@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const CodeLog = require('../models/CodeLog');
+const Post = require('../models/Post');
 const bcrypt = require('bcrypt');
 const gpc = require('generate-pincode');
 const nodemailer = require('nodemailer');
@@ -50,6 +51,61 @@ const userController = {
             });
 
             return res.json({ user });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
+    getPostsByUser: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const user = await User.findOne({ _id: id });
+
+            if (!user) return res.status(400).json({ msg: 'User not found' });
+
+            const posts = await Post.find({ user: user._id })
+                .sort({ createdAt: 'desc' })
+                .populate({
+                    path: 'categories',
+                    model: 'Category',
+                    select: 'name',
+                })
+                .populate({
+                    path: 'subCategories',
+                    model: 'SubCategory',
+                    select: 'name',
+                })
+                .populate({
+                    path: 'areas',
+                    populate: [
+                        {
+                            path: 'province',
+                            model: 'Province',
+                            select: 'name',
+                        },
+                    ],
+                })
+                .populate({
+                    path: 'areas',
+                    populate: [
+                        {
+                            path: 'district',
+                            model: 'District',
+                            select: 'name',
+                        },
+                    ],
+                })
+                .populate({
+                    path: 'areas',
+                    populate: [
+                        {
+                            path: 'ward',
+                            model: 'Ward',
+                            select: 'name',
+                        },
+                    ],
+                });
+
+            return res.json({ posts });
         } catch (err) {
             return res.status(500).json({ msg: err.message });
         }

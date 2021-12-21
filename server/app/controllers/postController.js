@@ -8,14 +8,8 @@ const postController = {
 
             if (!user) return res.status(400).json({ msg: 'User not found' });
 
-            const {
-                title,
-                content,
-                categories,
-                subCategories,
-                areas,
-                everyWhere,
-            } = req.body;
+            const { title, content, categories, subCategories, areas } =
+                req.body;
 
             post = new Post();
             post.user = user._id;
@@ -23,11 +17,8 @@ const postController = {
             post.content = content;
             post.categories = categories;
             post.subCategories = subCategories;
-            if (everyWhere == true) {
-                post.everyWhere = true;
-            } else {
-                post.areas = areas;
-            }
+            post.areas = areas;
+            if (areas.length == 0 || areas == undefined) post.everyWhere = true;
 
             if (req.files) {
                 const images = req.files.map((item) => {
