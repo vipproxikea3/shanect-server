@@ -24,7 +24,9 @@ router.put(
     userController.updateAdviseImages
 );
 router.use(multer().none());
-router.put('/advise', auth, userController.updateAdvise);
+router.put('/advise-categories', auth, userController.updateAdviseCategories);
+router.put('/advise-description', auth, userController.updateAdviseDescription);
+router.put('/advise-ready', auth, userController.updateAdviseReady);
 router.get('/me/posts', auth, postController.getMyPost);
 router.get('/me', auth, userController.getMe);
 router.get('/verify', userController.verifyUser);

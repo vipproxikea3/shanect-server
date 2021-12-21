@@ -618,9 +618,9 @@ a[x-apple-data-detectors='true'] {
             return res.status(500).json({ msg: err.message });
         }
     },
-    updateAdvise: async (req, res) => {
+    updateAdviseCategories: async (req, res) => {
         try {
-            const { categories, description, ready } = req.body;
+            const { categories } = req.body;
 
             let user = req.user;
 
@@ -629,7 +629,43 @@ a[x-apple-data-detectors='true'] {
             }
 
             user.advise.categories = categories;
+
+            await user.save();
+
+            return res.json({ user });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
+    updateAdviseDescription: async (req, res) => {
+        try {
+            const { description } = req.body;
+
+            let user = req.user;
+
+            if (!user) {
+                return res.status(400).json({ msg: 'User not found' });
+            }
+
             user.advise.description = description;
+
+            await user.save();
+
+            return res.json({ user });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
+    updateAdviseReady: async (req, res) => {
+        try {
+            const { ready } = req.body;
+
+            let user = req.user;
+
+            if (!user) {
+                return res.status(400).json({ msg: 'User not found' });
+            }
+
             user.advise.ready = ready;
 
             await user.save();
