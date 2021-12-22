@@ -167,7 +167,8 @@ const userController = {
             });
 
             let url =
-                'http://localhost:9000/api/users/verify?id=' + newUser._id;
+                'shanect-server.herokuapp.com/api/users/verify?id=' +
+                newUser._id;
 
             let content = '';
 
