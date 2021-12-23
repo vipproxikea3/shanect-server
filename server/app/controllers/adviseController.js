@@ -5,13 +5,22 @@ const adviseController = {
         try {
             const { category } = req.query;
 
-            let users = await User.find({});
+            let users = await User.find({}).populate({
+                path: 'advise',
+                populate: [
+                    {
+                        path: 'categories',
+                        model: 'Category',
+                        select: 'name',
+                    },
+                ],
+            });
             users = users.filter((user) => user.advise.ready == true);
 
             if (category) {
                 users = users.filter((user) => {
                     let categories = user.advise.categories;
-                    if (categories.find((item) => item.equals(category)))
+                    if (categories.find((item) => item._id.equals(category)))
                         return true;
                     return false;
                 });
