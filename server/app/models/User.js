@@ -66,6 +66,8 @@ const User = new Schema(
             images: [{ type: String }],
             ready: { type: Boolean, default: false },
         },
+        following: { type: Boolean },
+        saved: { type: Boolean },
     },
     { timestamps: true, collection: 'users' }
 );

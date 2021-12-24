@@ -1,6 +1,8 @@
 const User = require('../models/User');
 const CodeLog = require('../models/CodeLog');
 const Post = require('../models/Post');
+const FollowUser = require('../models/FollowUser');
+const SaveAdvise = require('../models/SaveAdvise');
 const bcrypt = require('bcrypt');
 const gpc = require('generate-pincode');
 const nodemailer = require('nodemailer');
@@ -49,6 +51,29 @@ const userController = {
                     },
                 ],
             });
+
+            const me = req.user;
+            if (me) {
+                const followUser = await FollowUser.findOne({
+                    user: me._id,
+                    follow: user._id,
+                });
+                if (followUser) {
+                    user.following = true;
+                } else {
+                    user.following = false;
+                }
+
+                const saveAdvise = await SaveAdvise.findOne({
+                    user: me._id,
+                    advise: user._id,
+                });
+                if (saveAdvise) {
+                    user.saved = true;
+                } else {
+                    user.saved = false;
+                }
+            }
 
             return res.json({ user });
         } catch (err) {
@@ -813,6 +838,144 @@ a[x-apple-data-detectors='true'] {
             });
 
             return res.json({ user });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
+    follow: async (req, res) => {
+        try {
+            const user = req.user;
+            if (!user) return res.status(400).json({ msg: 'User not found' });
+
+            const { id } = req.params;
+            const follow = await User.findOne({ _id: id }).populate({
+                path: 'advise',
+                populate: [
+                    {
+                        path: 'categories',
+                        model: 'Category',
+                        select: 'name',
+                    },
+                ],
+            });
+            if (!follow)
+                return res.status(400).json({ msg: 'Follower not found' });
+
+            let followUser = await FollowUser.findOne({
+                user: user._id,
+                follow: follow._id,
+            });
+
+            if (!followUser) {
+                const followUser = new FollowUser();
+                followUser.user = user._id;
+                followUser.follow = follow._id;
+                await followUser.save();
+                follow.following = true;
+            } else {
+                await followUser.delete();
+                follow.following = false;
+            }
+
+            return res.json({ follow });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
+    getMyFollowUser: async (req, res) => {
+        try {
+            const user = req.user;
+            if (!user) return res.status(400).json({ msg: 'User not found' });
+
+            let users = await User.find({}).populate({
+                path: 'advise',
+                populate: [
+                    {
+                        path: 'categories',
+                        model: 'Category',
+                        select: 'name',
+                    },
+                ],
+            });
+
+            const followUsers = await FollowUser.find({ user: user._id });
+
+            users = users.filter((user) => {
+                if (followUsers.find((item) => item.follow.equals(user._id)))
+                    return true;
+                return false;
+            });
+
+            return res.json({ users });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
+    save: async (req, res) => {
+        try {
+            const user = req.user;
+            if (!user) return res.status(400).json({ msg: 'User not found' });
+
+            const { id } = req.params;
+            const advise = await User.findOne({ _id: id }).populate({
+                path: 'advise',
+                populate: [
+                    {
+                        path: 'categories',
+                        model: 'Category',
+                        select: 'name',
+                    },
+                ],
+            });
+            if (!advise)
+                return res.status(400).json({ msg: 'Advise not found' });
+
+            let saveAdvise = await SaveAdvise.findOne({
+                user: user._id,
+                advise: advise._id,
+            });
+
+            if (!saveAdvise) {
+                const saveAdvise = new SaveAdvise();
+                saveAdvise.user = user._id;
+                saveAdvise.advise = advise._id;
+                await saveAdvise.save();
+                advise.saved = true;
+            } else {
+                await saveAdvise.delete();
+                advise.saved = false;
+            }
+
+            return res.json({ advise });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
+    getMySaveAdvise: async (req, res) => {
+        try {
+            const user = req.user;
+            if (!user) return res.status(400).json({ msg: 'User not found' });
+
+            let users = await User.find({}).populate({
+                path: 'advise',
+                populate: [
+                    {
+                        path: 'categories',
+                        model: 'Category',
+                        select: 'name',
+                    },
+                ],
+            });
+
+            const savedAdvises = await SaveAdvise.find({ user: user._id });
+
+            users = users.filter((user) => {
+                if (savedAdvises.find((item) => item.advise.equals(user._id)))
+                    return true;
+                return false;
+            });
+
+            return res.json({ users });
         } catch (err) {
             return res.status(500).json({ msg: err.message });
         }
