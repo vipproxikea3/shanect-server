@@ -28,6 +28,7 @@ router.put('/advise-categories', auth, userController.updateAdviseCategories);
 router.put('/advise-description', auth, userController.updateAdviseDescription);
 router.put('/advise-ready', auth, userController.updateAdviseReady);
 router.get('/me/posts', auth, postController.getMyPost);
+router.get('/me/saved-posts', auth, postController.getMySavedPost);
 router.get('/me', auth, userController.getMe);
 router.get('/verify', userController.verifyUser);
 router.post('/register', userController.register);

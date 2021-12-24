@@ -19,6 +19,7 @@ const Post = new Schema(
                 ward: { type: Schema.Types.ObjectId, ref: 'Ward' },
             },
         ],
+        saved: { type: Boolean },
     },
     { timestamps: true, collection: 'posts' }
 );

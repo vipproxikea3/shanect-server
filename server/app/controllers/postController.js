@@ -37,17 +37,82 @@ const postController = {
             return res.status(500).json({ msg: err.message });
         }
     },
-    // save: async (req, res) => {
-    //     try {
-    //         const user = req.user;
-    //         if (!user) return res.status(400).json({ msg: 'User not found' });
+    save: async (req, res) => {
+        try {
+            const user = req.user;
+            if (!user) return res.status(400).json({ msg: 'User not found' });
 
-    //         const
+            const id = req.params.id;
+            let post = await Post.findOne({ _id: id })
+                .populate({
+                    path: 'user',
+                    model: 'User',
+                    select: 'name',
+                })
+                .populate({
+                    path: 'categories',
+                    model: 'Category',
+                    select: 'name',
+                })
+                .populate({
+                    path: 'subCategories',
+                    model: 'SubCategory',
+                    select: 'name',
+                })
+                .populate({
+                    path: 'areas',
+                    populate: [
+                        {
+                            path: 'province',
+                            model: 'Province',
+                            select: 'name',
+                        },
+                    ],
+                })
+                .populate({
+                    path: 'areas',
+                    populate: [
+                        {
+                            path: 'district',
+                            model: 'District',
+                            select: 'name',
+                        },
+                    ],
+                })
+                .populate({
+                    path: 'areas',
+                    populate: [
+                        {
+                            path: 'ward',
+                            model: 'Ward',
+                            select: 'name',
+                        },
+                    ],
+                });
+            if (!post)
+                return res.status(500).json({ msg: 'This post not exist' });
 
-    //     } catch (err) {
-    //         return res.status(500).json({ msg: err.message });
-    //     }
-    // },
+            let savePost = await SavePost.findOne({
+                user: user._id,
+                post: post._id,
+            });
+
+            if (!savePost) {
+                const savePost = new SavePost();
+                savePost.user = user._id;
+                savePost.post = post._id;
+                await savePost.save();
+                post.saved = true;
+            } else {
+                await savePost.delete();
+                post.saved = false;
+            }
+
+            return res.json({ post });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
     getAll: async (req, res) => {
         try {
             let posts = await Post.find({})
@@ -171,6 +236,20 @@ const postController = {
                 });
             }
 
+            const user = req.user;
+            if (user) {
+                const savedPosts = await SavePost.find({ user: user._id });
+
+                posts = posts.map((post) => {
+                    if (savedPosts.find((item) => item.post.equals(post._id))) {
+                        post.saved = true;
+                    } else {
+                        post.saved = false;
+                    }
+                    return post;
+                });
+            }
+
             return res.json({ posts });
         } catch (err) {
             return res.status(500).json({ msg: err.message });
@@ -180,7 +259,7 @@ const postController = {
         try {
             const user = req.user;
             if (!user) return res.status(400).json({ msg: 'User not found' });
-            const posts = await Post.find({ user: user._id })
+            let posts = await Post.find({ user: user._id })
                 .sort({ createdAt: 'desc' })
                 .populate({
                     path: 'user',
@@ -227,6 +306,84 @@ const postController = {
                         },
                     ],
                 });
+
+            const savedPosts = await SavePost.find({ user: user._id });
+
+            posts = posts.map((post) => {
+                if (savedPosts.find((item) => item.post.equals(post._id))) {
+                    post.saved = true;
+                } else {
+                    post.saved = false;
+                }
+                return post;
+            });
+
+            return res.json({ posts });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
+    getMySavedPost: async (req, res) => {
+        try {
+            const user = req.user;
+            if (!user) return res.status(400).json({ msg: 'User not found' });
+            let posts = await Post.find({})
+                .sort({ createdAt: 'desc' })
+                .populate({
+                    path: 'user',
+                    model: 'User',
+                    select: 'name',
+                })
+                .populate({
+                    path: 'categories',
+                    model: 'Category',
+                    select: 'name',
+                })
+                .populate({
+                    path: 'subCategories',
+                    model: 'SubCategory',
+                    select: 'name',
+                })
+                .populate({
+                    path: 'areas',
+                    populate: [
+                        {
+                            path: 'province',
+                            model: 'Province',
+                            select: 'name',
+                        },
+                    ],
+                })
+                .populate({
+                    path: 'areas',
+                    populate: [
+                        {
+                            path: 'district',
+                            model: 'District',
+                            select: 'name',
+                        },
+                    ],
+                })
+                .populate({
+                    path: 'areas',
+                    populate: [
+                        {
+                            path: 'ward',
+                            model: 'Ward',
+                            select: 'name',
+                        },
+                    ],
+                });
+
+            const savedPosts = await SavePost.find({ user: user._id });
+            const savedPostsArr = savedPosts.map((item) => item.post);
+
+            posts = posts.filter((post) => {
+                if (savedPostsArr.find((item) => item.equals(post._id)))
+                    return true;
+                return false;
+            });
+
             return res.json({ posts });
         } catch (err) {
             return res.status(500).json({ msg: err.message });
@@ -283,6 +440,19 @@ const postController = {
                 });
             if (!post)
                 return res.status(500).json({ msg: 'This post not exist' });
+
+            const user = req.user;
+            if (user) {
+                const savedPost = await SavePost.findOne({
+                    user: user._id,
+                    post: post._id,
+                });
+                if (savedPost) {
+                    post.saved = true;
+                } else {
+                    post.saved = false;
+                }
+            }
 
             return res.json({ post });
         } catch (err) {
