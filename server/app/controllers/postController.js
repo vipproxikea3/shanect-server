@@ -1,4 +1,5 @@
 const Post = require('../models/Post');
+const SavePost = require('../models/SavePost');
 const Comment = require('../models/Comment');
 
 const postController = {
@@ -36,10 +37,26 @@ const postController = {
             return res.status(500).json({ msg: err.message });
         }
     },
+    // save: async (req, res) => {
+    //     try {
+    //         const user = req.user;
+    //         if (!user) return res.status(400).json({ msg: 'User not found' });
+
+    //         const
+
+    //     } catch (err) {
+    //         return res.status(500).json({ msg: err.message });
+    //     }
+    // },
     getAll: async (req, res) => {
         try {
             let posts = await Post.find({})
                 .sort({ createdAt: 'desc' })
+                .populate({
+                    path: 'user',
+                    model: 'User',
+                    select: 'name',
+                })
                 .populate({
                     path: 'categories',
                     model: 'Category',
@@ -166,6 +183,11 @@ const postController = {
             const posts = await Post.find({ user: user._id })
                 .sort({ createdAt: 'desc' })
                 .populate({
+                    path: 'user',
+                    model: 'User',
+                    select: 'name',
+                })
+                .populate({
                     path: 'categories',
                     model: 'Category',
                     select: 'name',
@@ -215,6 +237,11 @@ const postController = {
             const id = req.params.id;
             let post = await Post.findOne({ _id: id })
                 .populate({
+                    path: 'user',
+                    model: 'User',
+                    select: 'name',
+                })
+                .populate({
                     path: 'categories',
                     model: 'Category',
                     select: 'name',
@@ -256,9 +283,6 @@ const postController = {
                 });
             if (!post)
                 return res.status(500).json({ msg: 'This post not exist' });
-
-            const comments = await Comment.find({ post: post._id });
-            post.comments = comments;
 
             return res.json({ post });
         } catch (err) {

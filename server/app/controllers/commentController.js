@@ -48,7 +48,11 @@ const subCategoryController = {
     getByPost: async (req, res) => {
         try {
             const id = req.params.id;
-            const comments = await Comment.find({ post: id });
+            const comments = await Comment.find({ post: id }).populate({
+                path: 'user',
+                model: 'User',
+                select: 'name',
+            });
             return res.json({ comments });
         } catch (err) {
             return res.status(500).json({ msg: err.message });
