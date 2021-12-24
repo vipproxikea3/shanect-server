@@ -120,7 +120,7 @@ const postController = {
                 .populate({
                     path: 'user',
                     model: 'User',
-                    select: 'name',
+                    select: 'name avatar',
                 })
                 .populate({
                     path: 'categories',
@@ -264,7 +264,7 @@ const postController = {
                 .populate({
                     path: 'user',
                     model: 'User',
-                    select: 'name',
+                    select: 'name avatar',
                 })
                 .populate({
                     path: 'categories',
@@ -332,7 +332,7 @@ const postController = {
                 .populate({
                     path: 'user',
                     model: 'User',
-                    select: 'name',
+                    select: 'name avatar',
                 })
                 .populate({
                     path: 'categories',
@@ -396,7 +396,7 @@ const postController = {
                 .populate({
                     path: 'user',
                     model: 'User',
-                    select: 'name',
+                    select: 'name avatar',
                 })
                 .populate({
                     path: 'categories',
