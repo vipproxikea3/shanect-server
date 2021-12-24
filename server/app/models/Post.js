@@ -19,6 +19,7 @@ const Post = new Schema(
                 ward: { type: Schema.Types.ObjectId, ref: 'Ward' },
             },
         ],
+        comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
     },
     { timestamps: true, collection: 'posts' }
 );

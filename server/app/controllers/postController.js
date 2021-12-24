@@ -257,6 +257,9 @@ const postController = {
             if (!post)
                 return res.status(500).json({ msg: 'This post not exist' });
 
+            const comments = await Comment.find({ post: post._id });
+            post.comments = comments;
+
             return res.json({ post });
         } catch (err) {
             return res.status(500).json({ msg: err.message });

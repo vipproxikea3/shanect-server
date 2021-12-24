@@ -7,6 +7,7 @@ const Comment = new Schema(
         user: { type: Schema.Types.ObjectId, ref: 'User' },
         post: { type: Schema.Types.ObjectId, ref: 'Post' },
         content: { type: String },
+        image: { type: String },
     },
     { timestamps: true, collection: 'comments' }
 );

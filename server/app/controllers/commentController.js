@@ -15,6 +15,10 @@ const subCategoryController = {
             comment.post = post;
             comment.content = content;
 
+            if (req.file) {
+                comment.image = req.file.path;
+            }
+
             await comment.save();
 
             return res.json({ comment });
