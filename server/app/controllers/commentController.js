@@ -10,7 +10,7 @@ const subCategoryController = {
 
             const { post, content } = req.body;
 
-            const comment = new Comment();
+            let comment = new Comment();
             comment.user = user._id;
             comment.post = post;
             comment.content = content;
@@ -21,6 +21,12 @@ const subCategoryController = {
 
             await comment.save();
 
+            comment = await Comment.findOne({ _id: comment._id }).populate({
+                path: 'user',
+                model: 'User',
+                select: 'name avatar',
+            });
+
             return res.json({ comment });
         } catch (err) {
             return res.status(500).json({ msg: err.message });
@@ -28,7 +34,11 @@ const subCategoryController = {
     },
     getAll: async (req, res) => {
         try {
-            const comments = await Comment.find({});
+            const comments = await Comment.find({}).populate({
+                path: 'user',
+                model: 'User',
+                select: 'name avatar',
+            });
             return res.json({ comments });
         } catch (err) {
             return res.status(500).json({ msg: err.message });
@@ -51,7 +61,7 @@ const subCategoryController = {
             const comments = await Comment.find({ post: id }).populate({
                 path: 'user',
                 model: 'User',
-                select: 'name',
+                select: 'name avatar',
             });
             return res.json({ comments });
         } catch (err) {
