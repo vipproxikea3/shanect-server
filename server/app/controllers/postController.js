@@ -376,12 +376,20 @@ const postController = {
                 });
 
             const savedPosts = await SavePost.find({ user: user._id });
-            const savedPostsArr = savedPosts.map((item) => item.post);
 
             posts = posts.filter((post) => {
-                if (savedPostsArr.find((item) => item.equals(post._id)))
+                let savePost = savedPosts.find((item) =>
+                    item.post.equals(post._id)
+                );
+                if (savePost) {
+                    post.savedAt = savePost.createdAt;
                     return true;
-                return false;
+                } else {
+                    return false;
+                }
+                // if (savedPostsArr.find((item) => item.equals(post._id)))
+                //     return true;
+                // return false;
             });
 
             return res.json({ posts });

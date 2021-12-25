@@ -20,6 +20,7 @@ const Post = new Schema(
             },
         ],
         saved: { type: Boolean },
+        savedAt: { type: Date },
     },
     { timestamps: true, collection: 'posts' }
 );
