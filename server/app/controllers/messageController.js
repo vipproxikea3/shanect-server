@@ -1,15 +1,6 @@
 const Message = require('../models/Message');
 const Contact = require('../models/Contact');
 const User = require('../models/User');
-const Pusher = require('pusher');
-
-const pusher = new Pusher({
-    appId: '1318099',
-    key: '19f5ca9c7637832b95dd',
-    secret: '8b2a92e1d0ce2855cc8d',
-    cluster: 'ap1',
-    useTLS: true,
-});
 
 const messageController = {
     send: async (req, res) => {
@@ -61,9 +52,19 @@ const messageController = {
                 await contact.save();
             }
 
-            pusher.trigger('my-channel', 'my-event', {
-                message: message,
-            });
+            message = await Message.findOne({ _id: message._id })
+                .populate({
+                    path: 'from',
+                    model: 'User',
+                    select: 'name avatar',
+                })
+                .populate({
+                    path: 'to',
+                    model: 'User',
+                    select: 'name avatar',
+                });
+
+            req.app.io.emit('message', { message });
 
             return res.json({ message });
         } catch (err) {
