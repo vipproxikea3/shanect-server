@@ -58,7 +58,7 @@ const User = new Schema(
         },
         verified: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         advise: {
             categories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
