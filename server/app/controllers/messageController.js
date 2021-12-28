@@ -5,7 +5,6 @@ const User = require('../models/User');
 const messageController = {
     send: async (req, res) => {
         try {
-            console.log();
             const user = req.user;
             const { content, reply } = req.body;
             const { to } = req.params;
