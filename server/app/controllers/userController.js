@@ -574,8 +574,7 @@ const userController = {
 
             await user.save();
 
-            //return res.json({ msg: 'verify success' });
-            return res.sendFile('../../public/success.html');
+            return res.json({ msg: 'verify success' });
         } catch (err) {
             return res.status(500).json({ msg: err.message });
         }
