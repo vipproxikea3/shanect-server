@@ -6,6 +6,7 @@ const SaveAdvise = require('../models/SaveAdvise');
 const bcrypt = require('bcrypt');
 const gpc = require('generate-pincode');
 const nodemailer = require('nodemailer');
+const { google } = require('googleapis');
 
 var cloudinary = require('cloudinary').v2;
 
@@ -14,6 +15,20 @@ cloudinary.config({
     api_key: '662668157463451',
     api_secret: 'Xy0OfONXFogj_KoCXuHOKKfaetw',
 });
+
+const CLIENT_ID =
+    '127746184739-mtd90vl8h27p5h4ngi9khj5lu70of7ne.apps.googleusercontent.com';
+const CLIENT_SECRET = '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';
+const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
+const REFRESH_TOKEN =
+    '1//04aDj-ZbeiGzvCgYIARAAGAQSNwF-L9IrIMNg0DafAPsX2qRVf9GbR3kPv50p8N07xAukzKU4bPiusKFuLJCc24erXIna6KLqrY8';
+
+const oAuth2Client = new google.auth.OAuth2(
+    CLIENT_ID,
+    CLIENT_SECRET,
+    REDIRECT_URI
+);
+oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
 const userController = {
     getMe: async (req, res) => {
@@ -177,6 +192,8 @@ const userController = {
 
             await newUser.save();
 
+            const accessToken = await oAuth2Client.getAccessToken();
+
             var transporter = nodemailer.createTransport({
                 // config mail server
                 host: 'smtp.gmail.com',
@@ -185,13 +202,10 @@ const userController = {
                 auth: {
                     type: 'OAuth2',
                     user: 'ShanectTeam@gmail.com',
-                    clientId:
-                        '127746184739-mtd90vl8h27p5h4ngi9khj5lu70of7ne.apps.googleusercontent.com',
-                    clientSecret: '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',
-                    refreshToken:
-                        '1//04aDj-ZbeiGzvCgYIARAAGAQSNwF-L9IrIMNg0DafAPsX2qRVf9GbR3kPv50p8N07xAukzKU4bPiusKFuLJCc24erXIna6KLqrY8',
-                    accessToken:
-                        'ya29.a0ARrdaM9-nd91jx9XpFq0OwZQqccUsQ2dBuJN_UTf55jAV17FrliZ-Ydq1jXZk1sa-aYiCLqjOnyUtQ6-pv1n3zDD31nBLZagFzVhCp3oCsT4GMFwEuSq4fE8EnKL1ZH7xF1ZGYGUPNQED2GLchEmUjDYYf1_',
+                    clientId: CLIENT_ID,
+                    clientSecret: CLIENT_SECRET,
+                    refreshToken: REFRESH_TOKEN,
+                    accessToken: accessToken,
                     // user: 'ShanectTeam@gmail.com',
                     // pass: '0376277843',
                 },
