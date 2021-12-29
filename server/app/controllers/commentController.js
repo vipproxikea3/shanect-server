@@ -70,6 +70,32 @@ const subCategoryController = {
             return res.status(500).json({ msg: err.message });
         }
     },
+    getByPostOfUser: async (req, res) => {
+        try {
+            const user = req.user;
+            if (!user) return res.status(400).json({ msg: 'User not found' });
+
+            let notifications = await Comment.find({})
+                .populate({
+                    path: 'user',
+                    model: 'User',
+                    select: 'name avatar',
+                })
+                .populate({
+                    path: 'post',
+                    model: 'Post',
+                    select: 'user',
+                });
+
+            notifications = notifications.filter((item) =>
+                item.post.user.equals(user._id)
+            );
+
+            return res.json({ notifications });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
 };
 
 module.exports = subCategoryController;
