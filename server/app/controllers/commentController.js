@@ -27,6 +27,8 @@ const subCategoryController = {
                 select: 'name avatar',
             });
 
+            req.app.io.emit('comment', { comment });
+
             return res.json({ comment });
         } catch (err) {
             return res.status(500).json({ msg: err.message });
