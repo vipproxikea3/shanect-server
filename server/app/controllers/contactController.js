@@ -21,7 +21,6 @@ const contactController = {
                 .populate({
                     path: 'lastMessage',
                     model: 'Message',
-                    select: 'content',
                 });
             contacts = contacts.filter(
                 (contact) =>

@@ -64,7 +64,25 @@ const messageController = {
                     select: 'name avatar',
                 });
 
+            contact = await Contact.findOne({ _id: contact._id })
+                .populate({
+                    path: 'members',
+                    model: 'User',
+                    select: 'name avatar',
+                })
+                .populate({
+                    path: 'seen',
+                    model: 'User',
+                    select: 'name avatar',
+                })
+                .populate({
+                    path: 'lastMessage',
+                    model: 'Message',
+                    select: 'content',
+                });
+
             req.app.io.emit('message', { message });
+            req.app.io.emit('contact', { contact });
 
             return res.json({ message });
         } catch (err) {
