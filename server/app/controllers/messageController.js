@@ -94,6 +94,7 @@ const messageController = {
             const user = req.user;
             const { to } = req.params;
             let messages = await Message.find({})
+                .sort({ createdAt: 'desc' })
                 .populate({
                     path: 'from',
                     model: 'User',
