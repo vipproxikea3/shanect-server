@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const SaveAdvise = require('../models/SaveAdvise');
 
 const adviseController = {
     getAll: async (req, res) => {
@@ -23,6 +24,24 @@ const adviseController = {
                     if (categories.find((item) => item._id.equals(category)))
                         return true;
                     return false;
+                });
+            }
+
+            const user = req.user;
+            if (user) {
+                const savedAdvises = await SaveAdvise.find({ user: user._id });
+
+                users = users.map((advise) => {
+                    if (
+                        savedAdvises.find((item) =>
+                            item.advise.equals(advise._id)
+                        )
+                    ) {
+                        advise.saved = true;
+                    } else {
+                        advise.saved = false;
+                    }
+                    return advise;
                 });
             }
 
