@@ -62,7 +62,7 @@ const categoryController = {
 
             const { active, name, icon } = req.body;
 
-            if (active) category.active = active;
+            if (active != undefined) category.active = active;
             if (name) category.name = name;
             if (icon) category.icon = icon;
 
