@@ -15,6 +15,10 @@ const Category = new Schema(
         icon: {
             type: String,
         },
+        active: {
+            type: Boolean,
+            default: true,
+        },
         subCategory: [{ type: Schema.Types.ObjectId, ref: 'SubCategory' }],
     },
     { timestamps: true, collection: 'categories' }
