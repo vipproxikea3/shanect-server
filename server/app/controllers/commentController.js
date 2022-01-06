@@ -87,8 +87,10 @@ const subCategoryController = {
                     select: 'user',
                 });
 
-            notifications = notifications.filter((item) =>
-                item.post.user.equals(user._id)
+            notifications = notifications.filter(
+                (item) =>
+                    item.post.user.equals(user._id) &&
+                    !item.user.equals(user._id)
             );
 
             return res.json({ notifications });
