@@ -26,6 +26,7 @@ router.put(
     userController.updateAdviseImages
 );
 router.use(multer().none());
+router.put('/advise-level', auth, userController.updateAdviseLevel);
 router.put('/advise-categories', auth, userController.updateAdviseCategories);
 router.put('/advise-description', auth, userController.updateAdviseDescription);
 router.put('/advise-ready', auth, userController.updateAdviseReady);

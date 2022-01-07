@@ -102,7 +102,7 @@ const userController = {
 
             if (!user) return res.status(400).json({ msg: 'User not found' });
 
-            const posts = await Post.find({ user: user._id })
+            const posts = await Post.find({ user: user._id, status: true })
                 .sort({ createdAt: 'desc' })
                 .populate({
                     path: 'categories',
@@ -713,8 +713,8 @@ const userController = {
                 return res.status(400).json({ msg: 'User not found' });
             }
 
-            user.name = name;
-            user.gender = gender;
+            if (name) user.name = name;
+            if (gender) user.gender = gender;
             user.dateOfBirth = {
                 date: dateOfBirth,
                 month: monthOfBirth,
@@ -722,6 +722,36 @@ const userController = {
             };
 
             await user.save();
+
+            return res.json({ user });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
+    updateAdviseLevel: async (req, res) => {
+        try {
+            const { level } = req.body;
+
+            let user = req.user;
+
+            if (!user) {
+                return res.status(400).json({ msg: 'User not found' });
+            }
+
+            user.advise.level = level;
+
+            await user.save();
+
+            user = await User.findOne({ _id: user._id }).populate({
+                path: 'advise',
+                populate: [
+                    {
+                        path: 'categories',
+                        model: 'Category',
+                        select: 'name',
+                    },
+                ],
+            });
 
             return res.json({ user });
         } catch (err) {

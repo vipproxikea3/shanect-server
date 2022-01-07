@@ -11,6 +11,7 @@ router.post('/', fileUploader.array('images', 50), auth, postController.create);
 router.use(multer().none());
 router.get('/:id/comments', commentController.getByPost);
 router.post('/:id/save', auth, postController.save);
+router.put('/:id', auth, postController.update);
 router.get('/:id', authFree, postController.getById);
 router.get('/', authFree, postController.getAll);
 

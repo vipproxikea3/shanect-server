@@ -28,13 +28,14 @@ const adviseController = {
             }
 
             const user = req.user;
+            const savedAdvises = await SaveAdvise.find();
             if (user) {
-                const savedAdvises = await SaveAdvise.find({ user: user._id });
-
                 users = users.map((advise) => {
                     if (
-                        savedAdvises.find((item) =>
-                            item.advise.equals(advise._id)
+                        savedAdvises.find(
+                            (item) =>
+                                item.advise.equals(advise._id) &&
+                                item.user.equals(user._id)
                         )
                     ) {
                         advise.saved = true;
@@ -44,6 +45,15 @@ const adviseController = {
                     return advise;
                 });
             }
+
+            users = users.map((advise) => {
+                let saves = savedAdvises.filter((item) =>
+                    item.advise.equals(advise._id)
+                );
+                advise.saves = saves.length;
+                console.log(saves);
+                return advise;
+            });
 
             return res.json({ users });
         } catch (err) {

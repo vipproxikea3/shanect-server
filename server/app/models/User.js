@@ -61,12 +61,14 @@ const User = new Schema(
             default: false,
         },
         advise: {
+            level: { type: Number },
             categories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
             description: { type: String },
             images: [{ type: String }],
             ready: { type: Boolean, default: false },
         },
         following: { type: Boolean },
+        saves: { type: Number, default: 0 },
         saved: { type: Boolean },
     },
     { timestamps: true, collection: 'users' }

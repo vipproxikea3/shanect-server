@@ -37,6 +37,79 @@ const postController = {
             return res.status(500).json({ msg: err.message });
         }
     },
+    update: async (req, res) => {
+        try {
+            const user = req.user;
+            if (!user) return res.status(400).json({ msg: 'User not found' });
+            const id = req.params.id;
+            let post = await Post.findOne({ _id: id });
+            if (!post) return res.status(400).json({ msg: 'Post not found' });
+            if (!post.user.equals(user._id))
+                return res.status(400).json({ msg: 'Post not yours' });
+
+            const { title, content, categories, subCategories, areas, status } =
+                req.body;
+
+            if (title) post.title = title;
+            if (content) post.content = content;
+            if (categories) post.categories = categories;
+            if (subCategories) post.subCategories = subCategories;
+            if (areas) post.areas = areas;
+            if (status) post.status = status;
+
+            await post.save();
+
+            post = await Post.findOne({ _id: id })
+                .populate({
+                    path: 'user',
+                    model: 'User',
+                    select: 'name',
+                })
+                .populate({
+                    path: 'categories',
+                    model: 'Category',
+                    select: 'name',
+                })
+                .populate({
+                    path: 'subCategories',
+                    model: 'SubCategory',
+                    select: 'name',
+                })
+                .populate({
+                    path: 'areas',
+                    populate: [
+                        {
+                            path: 'province',
+                            model: 'Province',
+                            select: 'name',
+                        },
+                    ],
+                })
+                .populate({
+                    path: 'areas',
+                    populate: [
+                        {
+                            path: 'district',
+                            model: 'District',
+                            select: 'name',
+                        },
+                    ],
+                })
+                .populate({
+                    path: 'areas',
+                    populate: [
+                        {
+                            path: 'ward',
+                            model: 'Ward',
+                            select: 'name',
+                        },
+                    ],
+                });
+            return res.json({ post });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
     save: async (req, res) => {
         try {
             const user = req.user;
@@ -115,7 +188,7 @@ const postController = {
     },
     getAll: async (req, res) => {
         try {
-            let posts = await Post.find({})
+            let posts = await Post.find({ status: true })
                 .sort({ createdAt: 'desc' })
                 .populate({
                     path: 'user',
