@@ -21,7 +21,7 @@ const CLIENT_ID =
 const CLIENT_SECRET = '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';
 const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
 const REFRESH_TOKEN =
-    '1//04aDj-ZbeiGzvCgYIARAAGAQSNwF-L9IrIMNg0DafAPsX2qRVf9GbR3kPv50p8N07xAukzKU4bPiusKFuLJCc24erXIna6KLqrY8';
+    '1//04UlL-w4whsKdCgYIARAAGAQSNwF-L9Ir-WnFW7qAUUye7V1R31XZI5c86AhLNngEIrCoA4W-Oi79aM_KLVtwnxiNfDpWSPzAUUU';
 
 const oAuth2Client = new google.auth.OAuth2(
     CLIENT_ID,
@@ -1055,14 +1055,22 @@ const userController = {
 
             let pin = gpc(8);
 
+            const accessToken = await oAuth2Client.getAccessToken();
+
             var transporter = nodemailer.createTransport({
                 // config mail server
                 host: 'smtp.gmail.com',
                 port: 465,
                 secure: true,
                 auth: {
+                    type: 'OAuth2',
                     user: 'ShanectTeam@gmail.com',
-                    pass: '0376277843',
+                    clientId: CLIENT_ID,
+                    clientSecret: CLIENT_SECRET,
+                    refreshToken: REFRESH_TOKEN,
+                    accessToken: accessToken,
+                    // user: 'ShanectTeam@gmail.com',
+                    // pass: '0376277843',
                 },
                 tls: {
                     rejectUnauthorized: false,

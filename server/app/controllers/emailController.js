@@ -2,11 +2,28 @@ const Code = require('../models/CodeLog');
 const User = require('../models/User');
 const nodemailer = require('nodemailer');
 const gpc = require('generate-pincode');
+const { google } = require('googleapis');
+
+const CLIENT_ID =
+    '127746184739-mtd90vl8h27p5h4ngi9khj5lu70of7ne.apps.googleusercontent.com';
+const CLIENT_SECRET = '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';
+const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
+const REFRESH_TOKEN =
+    '1//04UlL-w4whsKdCgYIARAAGAQSNwF-L9Ir-WnFW7qAUUye7V1R31XZI5c86AhLNngEIrCoA4W-Oi79aM_KLVtwnxiNfDpWSPzAUUU';
+
+const oAuth2Client = new google.auth.OAuth2(
+    CLIENT_ID,
+    CLIENT_SECRET,
+    REDIRECT_URI
+);
+oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
 const emailController = {
     sendVerifyCode: async (req, res) => {
         try {
             let pin = gpc(6);
+
+            const accessToken = await oAuth2Client.getAccessToken();
 
             //Tiến hành gửi mail, nếu có gì đó bạn có thể xử lý trước khi gửi mail
             var transporter = nodemailer.createTransport({
@@ -15,11 +32,16 @@ const emailController = {
                 port: 465,
                 secure: true,
                 auth: {
-                    user: 'ShanectTeam@gmail.com', //Tài khoản gmail vừa tạo
-                    pass: '0376277843', //Mật khẩu tài khoản gmail vừa tạo
+                    type: 'OAuth2',
+                    user: 'ShanectTeam@gmail.com',
+                    clientId: CLIENT_ID,
+                    clientSecret: CLIENT_SECRET,
+                    refreshToken: REFRESH_TOKEN,
+                    accessToken: accessToken,
+                    // user: 'ShanectTeam@gmail.com',
+                    // pass: '0376277843',
                 },
                 tls: {
-                    // do not fail on invalid certs
                     rejectUnauthorized: false,
                 },
             });
