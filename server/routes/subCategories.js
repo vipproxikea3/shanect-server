@@ -5,6 +5,7 @@ const subCategoryController = require('../app/controllers/subCategoryController'
 router.use(multer().none());
 router.get('/', subCategoryController.getAll);
 router.get('/:id', subCategoryController.getById);
+router.put('/:id', subCategoryController.update);
 router.post('/', subCategoryController.create);
 
 module.exports = router;
