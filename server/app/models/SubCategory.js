@@ -9,6 +9,7 @@ const SubCategory = new Schema(
             required: true,
             trim: true,
         },
+        active: { type: Boolean, default: true },
     },
     { timestamps: true, collection: 'subCategories' }
 );

@@ -23,7 +23,7 @@ const categoryController = {
 
             let categories = await Category.find({}).populate({
                 path: 'subCategory',
-                select: 'name',
+                select: 'name active',
             });
 
             if (type) {
@@ -44,7 +44,7 @@ const categoryController = {
             const id = req.params.id;
             const category = await Category.findOne({ _id: id }).populate({
                 path: 'subCategory',
-                select: 'name',
+                select: 'name active',
             });
             if (!category)
                 return res.status(500).json({ msg: 'This category not exist' });

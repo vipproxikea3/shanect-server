@@ -21,6 +21,26 @@ const subCategoryController = {
             return res.status(500).json({ msg: err.message });
         }
     },
+    update: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const { name, active } = req.body;
+
+            let subCategory = await SubCategory.findOne({ _id: id });
+            if (!subCategory)
+                return res
+                    .status(500)
+                    .json({ msg: 'This subCategory not exist' });
+
+            if (name) subCategory.name = name;
+            if (active != undefined) subCategory.active = active;
+
+            await subCategory.save();
+            return res.json({ subCategory });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
     getAll: async (req, res) => {
         try {
             const subCategories = await SubCategory.find({});
