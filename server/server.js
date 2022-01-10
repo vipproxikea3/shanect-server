@@ -24,8 +24,16 @@ const socketIo = require('socket.io')(server, {
     },
 });
 
+let socketIds = {};
+
 socketIo.on('connection', (socket) => {
+    socket.emit('getId', socket.id);
     console.log('New client connected: ' + socket.id);
+
+    socket.on('setupSocketId', (data) => {
+        socketIds[data.idUser] = data.socketId;
+        app.socketIds = socketIds;
+    });
 
     socket.on('disconnect', () => {
         console.log('Client disconnected');
