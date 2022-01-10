@@ -2,13 +2,17 @@ const Comment = require('../models/Comment');
 const Post = require('../models/Post');
 const User = require('../models/User');
 
-const subCategoryController = {
+const commentController = {
     create: async (req, res) => {
         try {
             const user = req.user;
             if (!user) return res.status(400).json({ msg: 'User not found' });
 
             const { post, content } = req.body;
+
+            const postTmp = await Post.findOne({ _id: post });
+            if (!postTmp)
+                return res.status(400).json({ msg: 'Post not found' });
 
             let comment = new Comment();
             comment.user = user._id;
@@ -21,13 +25,20 @@ const subCategoryController = {
 
             await comment.save();
 
-            comment = await Comment.findOne({ _id: comment._id }).populate({
-                path: 'user',
-                model: 'User',
-                select: 'name avatar',
-            });
+            comment = await Comment.findOne({ _id: comment._id })
+                .populate({
+                    path: 'user',
+                    model: 'User',
+                    select: 'name avatar',
+                })
+                .populate({
+                    path: 'post',
+                    model: 'Post',
+                    select: 'user',
+                });
 
-            req.app.io.emit('comment', { comment });
+            if (!postTmp.user.equals(user._id))
+                req.app.io.emit('comment', { comment });
 
             return res.json({ comment });
         } catch (err) {
@@ -100,4 +111,4 @@ const subCategoryController = {
     },
 };
 
-module.exports = subCategoryController;
+module.exports = commentController;

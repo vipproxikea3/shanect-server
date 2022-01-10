@@ -61,7 +61,14 @@ const User = new Schema(
             default: false,
         },
         advise: {
-            level: { type: Number },
+            level: {
+                value: {
+                    type: Number,
+                },
+                name: {
+                    type: String,
+                },
+            },
             categories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
             description: { type: String },
             images: [{ type: String }],

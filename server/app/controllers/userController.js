@@ -738,7 +738,31 @@ const userController = {
                 return res.status(400).json({ msg: 'User not found' });
             }
 
-            user.advise.level = level;
+            user.advise.level.value = level;
+
+            if (level == 0) {
+                user.advise.level.name = 'Không rõ';
+            } else if (level == 1) {
+                user.advise.level.name = 'Tiểu học';
+            } else if (level == 2) {
+                user.advise.level.name = 'Trung học cơ sở';
+            } else if (level == 3) {
+                user.advise.level.name = 'Trung học phổ thông';
+            } else if (level == 4) {
+                user.advise.level.name = 'Trung cấp';
+            } else if (level == 5) {
+                user.advise.level.name = 'Cao đẳng';
+            } else if (level == 6) {
+                user.advise.level.name = 'Đại học';
+            } else if (level == 7) {
+                user.advise.level.name = 'Thạc sĩ';
+            } else if (level == 8) {
+                user.advise.level.name = 'Tiến sĩ';
+            } else if (level == 9) {
+                user.advise.level.name = 'Phó giáo sư';
+            } else if (level == 10) {
+                user.advise.level.name = 'Giáo sư';
+            }
 
             await user.save();
 
