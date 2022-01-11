@@ -38,11 +38,11 @@ const commentController = {
                     select: 'user',
                 });
 
-            const to = postTmp.user;
+            const to = postTmp.user.toString();
 
             if (!postTmp.user.equals(user._id) && to != undefined)
                 req.app.io
-                    .to(req.app.socketId[to])
+                    .to(req.app.socketIds[to])
                     .emit('comment', { comment });
 
             return res.json({ comment });

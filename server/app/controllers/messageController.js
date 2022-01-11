@@ -81,8 +81,8 @@ const messageController = {
                     select: 'content',
                 });
 
-            req.app.io.to(req.app.socketId[to]).emit('message', { message });
-            req.app.io.to(req.app.socketId[to]).emit('contact', { contact });
+            req.app.io.to(req.app.socketIds[to]).emit('message', { message });
+            req.app.io.to(req.app.socketIds[to]).emit('contact', { contact });
 
             return res.json({ message });
         } catch (err) {

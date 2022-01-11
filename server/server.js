@@ -25,6 +25,7 @@ const socketIo = require('socket.io')(server, {
 });
 
 let socketIds = {};
+app.socketIds = socketIds;
 
 socketIo.on('connection', (socket) => {
     socket.emit('getId', socket.id);
