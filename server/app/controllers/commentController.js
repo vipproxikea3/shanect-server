@@ -41,7 +41,9 @@ const commentController = {
             const to = postTmp.user;
 
             if (!postTmp.user.equals(user._id) && to != undefined)
-                req.app.io.to(req.app.socketId.to).emit('comment', { comment });
+                req.app.io
+                    .to(req.app.socketId[to])
+                    .emit('comment', { comment });
 
             return res.json({ comment });
         } catch (err) {
