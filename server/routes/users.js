@@ -48,5 +48,6 @@ router.get('/:id/posts', userController.getPostsByUser);
 router.post('/:id/follow', auth, userController.follow);
 router.post('/:id/save', auth, userController.save);
 router.put('/', auth, userController.update);
+router.get('/', userController.getAll);
 
 module.exports = router;

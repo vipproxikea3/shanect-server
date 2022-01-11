@@ -53,6 +53,24 @@ const userController = {
             return res.status(500).json({ msg: err.message });
         }
     },
+    getAll: async (req, res) => {
+        try {
+            const users = await User.find({ verified: true }).populate({
+                path: 'advise',
+                populate: [
+                    {
+                        path: 'categories',
+                        model: 'Category',
+                        select: 'name',
+                    },
+                ],
+            });
+
+            return res.json({ users });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
     getUserById: async (req, res) => {
         try {
             const { id } = req.params;
