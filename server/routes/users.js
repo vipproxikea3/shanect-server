@@ -34,6 +34,7 @@ router.get('/me/posts', auth, postController.getMyPost);
 router.get('/me/saved-posts', auth, postController.getMySavedPost);
 router.get('/me/saved-advises', auth, userController.getMySaveAdvise);
 router.get('/me/follow-users', auth, userController.getMyFollowUser);
+router.post('/me/seen-notifications/:id', auth, commentController.seen);
 router.get('/me/notifications', auth, commentController.getByPostOfUser);
 router.get('/me', auth, userController.getMe);
 router.get('/verify', userController.verifyUser);

@@ -8,6 +8,7 @@ const Comment = new Schema(
         post: { type: Schema.Types.ObjectId, ref: 'Post' },
         content: { type: String },
         image: { type: String },
+        seen: { type: Boolean, default: false },
     },
     { timestamps: true, collection: 'comments' }
 );

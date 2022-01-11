@@ -1,5 +1,6 @@
 const Comment = require('../models/Comment');
 const Post = require('../models/Post');
+const SeenNotification = require('../models/SeenNotification');
 const User = require('../models/User');
 
 const commentController = {
@@ -39,7 +40,7 @@ const commentController = {
 
             const to = postTmp.user;
 
-            if (!postTmp.user.equals(user._id))
+            if (!postTmp.user.equals(user._id) && to != undefined)
                 req.app.io.to(req.app.socketId.to).emit('comment', { comment });
 
             return res.json({ comment });
@@ -89,6 +90,7 @@ const commentController = {
             if (!user) return res.status(400).json({ msg: 'User not found' });
 
             let notifications = await Comment.find({})
+                .sort({ createdAt: 'desc' })
                 .populate({
                     path: 'user',
                     model: 'User',
@@ -106,7 +108,42 @@ const commentController = {
                     !item.user.equals(user._id)
             );
 
+            const seenNotifications = await SeenNotification.find({
+                user: user._id,
+            });
+
+            notifications.map((notification) => {
+                if (
+                    seenNotifications.find((item) =>
+                        item.comment.equals(notification._id)
+                    ) != undefined
+                )
+                    notification.seen = true;
+                else notification.seen = false;
+                return notification;
+            });
+
             return res.json({ notifications });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
+    seen: async (req, res) => {
+        try {
+            const user = req.user;
+            if (!user) return res.status(400).json({ msg: 'User not found' });
+
+            const { id } = req.params;
+            const comment = await Comment.findOne({ _id: id });
+            if (!comment)
+                return res.status(400).json({ msg: 'Comment not found' });
+
+            let seen = new SeenNotification();
+            seen.user = user._id;
+            seen.comment = id;
+
+            await seen.save();
+            return res.json({ seen });
         } catch (err) {
             return res.status(500).json({ msg: err.message });
         }
