@@ -12,5 +12,6 @@ router.post(
 );
 router.use(multer().none());
 router.get('/:to', auth, messageController.getByReceiverId);
+router.get('/', messageController.getAll);
 
 module.exports = router;

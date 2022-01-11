@@ -119,6 +119,14 @@ const messageController = {
             return res.status(500).json({ msg: err.message });
         }
     },
+    getAll: async (req, res) => {
+        try {
+            const messages = await Message.find({});
+            return res.json({ messages });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
 };
 
 module.exports = messageController;
