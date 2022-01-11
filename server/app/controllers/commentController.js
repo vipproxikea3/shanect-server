@@ -140,7 +140,13 @@ const commentController = {
             if (!comment)
                 return res.status(400).json({ msg: 'Comment not found' });
 
-            let seen = new SeenNotification();
+            let seen = await SeenNotification.findOne({
+                user: user._id,
+                comment: id,
+            });
+            if (seen) return res.json({ seen });
+
+            seen = new SeenNotification();
             seen.user = user._id;
             seen.comment = id;
 
